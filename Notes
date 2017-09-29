@@ -1,0 +1,5 @@
+If builing fails try to download a major release manually and extract it to NDK/sources -> rename directory to ffmepg
+
++ Always check if download links are active (links can change), because then instead of the archive the html file is downloaded and named exactly like the archive (extracting fail)
+
+For android builds use arm_pie configuration
