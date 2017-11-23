@@ -22,7 +22,7 @@ Change into your cloned Git - Directory with:<br />
 cd<br />
 cd $pathToYourGitDir
 ```
-<br /><br />
+<br />
 Export the NDK Path environment variable to use it in the scripts:
 <br />
 ```
