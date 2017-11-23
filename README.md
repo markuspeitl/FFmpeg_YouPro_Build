@@ -16,13 +16,13 @@ Path is correctly set from the script)
 <br /><br />
 ## 2.<br />
 (Option 1)<br />
-Change into your cloned Git - Directory with:
+Change into your cloned Git - Directory with:<br />
 <br />
 ```
-cd  
-cd $pathToYourGitDir  
+cd<br />
+cd $pathToYourGitDir
 ```
-<br />  
+<br /><br />
 Export the NDK Path environment variable to use it in the scripts:
 <br />
 ```
