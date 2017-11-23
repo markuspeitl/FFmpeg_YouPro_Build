@@ -48,7 +48,7 @@ if [ "$1" = "--init" ]; then
     #mkdir -p ${DIR_NDK} \
         #>> ${LOG_FILE} 2>&1
     #mv android-ndk-r12b/* ${DIR_NDK} \
-        >> ${LOG_FILE} 2>&1
+    #    >> ${LOG_FILE} 2>&1
 
     #printf "    done\n"
 
@@ -58,30 +58,30 @@ if [ "$1" = "--init" ]; then
     cd ${DIR_NDK}/sources \
         >> ${LOG_FILE} 2>&1
 
-    #printf "    cloning yasm\n"
-    #git clone --progress git://github.com/yasm/yasm.git \
+    printf "    cloning yasm\n"
+    git clone --progress git://github.com/yasm/yasm.git \
         >> ${LOG_FILE} 2>&1
 
-    #printf "    cloning ogg\n"
-    #git clone --progress git://git.xiph.org/mirrors/ogg.git \
-    #    >> ${LOG_FILE} 2>&1
+    printf "    cloning ogg\n"
+    git clone --progress git://git.xiph.org/mirrors/ogg.git \
+        >> ${LOG_FILE} 2>&1
 
-    #printf "    downloading vorbis\n"
-    #curl "https://ftp.osuosl.org/pub/xiph/releases/vorbis/libvorbis-1.3.4.tar.gz" \
-    #    -o libvorbis-1.3.4.tar.gz \
-    #    >> ${LOG_FILE} 2>&1
-    #tar xzvf libvorbis-1.3.4.tar.gz \
-    #    >> ${LOG_FILE} 2>&1
-    #rm libvorbis-1.3.4.tar.gz \
-    #    >> ${LOG_FILE} 2>&1
-    #rm -rf libvorbis \
-    #    >> ${LOG_FILE} 2>&1
-    #mv libvorbis-1.3.4 libvorbis \
-    #    >> ${LOG_FILE} 2>&1
+    printf "    downloading vorbis\n"
+    curl "https://ftp.osuosl.org/pub/xiph/releases/vorbis/libvorbis-1.3.4.tar.gz" \
+        -o libvorbis-1.3.4.tar.gz \
+        >> ${LOG_FILE} 2>&1
+    tar xzvf libvorbis-1.3.4.tar.gz \
+        >> ${LOG_FILE} 2>&1
+    rm libvorbis-1.3.4.tar.gz \
+        >> ${LOG_FILE} 2>&1
+    rm -rf libvorbis \
+        >> ${LOG_FILE} 2>&1
+    mv libvorbis-1.3.4 libvorbis \
+        >> ${LOG_FILE} 2>&1
 
-    #printf "    cloning vpx\n"
-    #(git clone --progress https://chromium.googlesource.com/webm/libvpx.git libvpx) \
-    #    >> ${LOG_FILE} 2>&1
+    printf "    cloning vpx\n"
+    (git clone --progress https://chromium.googlesource.com/webm/libvpx.git libvpx) \
+        >> ${LOG_FILE} 2>&1
 
     printf "    cloning ffmpeg\n"
     (git clone --progress git://source.ffmpeg.org/ffmpeg.git ffmpeg) \
