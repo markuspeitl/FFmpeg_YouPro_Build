@@ -7,9 +7,9 @@ The following commands refer to bash commands from the ubuntu terminal.<br /><br
 (Option 2) comment in corresponding section (line 33-53) in build_ffmpeg.sh and <br />
 download it together with the other sources when executing later down the line <br />
 <br />
-,,,
+```
 $ ./build_ffmpeg.sh --init
-,,,
+```
 <br />
 (My suggestion is to download the NDK manually (Option 1), as we can easier test multiple different NDK version and do not have to worry if the Evironment variable for the NDK
 Path is correctly set from the script)
@@ -18,27 +18,27 @@ Path is correctly set from the script)
 (Option 1)<br />
 Change into your cloned Git - Directory with:
 <br />
-,,,
-cd
-cd $pathToYourGitDir
-,,,
+```
+cd<br />
+cd $pathToYourGitDir<br />
+```
+<br /><br />
+Export the NDK Path environment variable to use it in the scripts:
 <br />
-Export the NDK Path environment variable to use it in the scripts:<br />
-<br />
-,,,
+```
 export DIR_NDK=$pathToYouNdkDirectory
-,,,
+```
 <br />
 (Option 2)<br />
 Nothing to do here. Should be set automatically from the script if everything goes as intended.
 <br />
 ## 3<br />
 (Option 1|Option 2)<br />
-Call to down additional sources<br />
+Call to download additional sources: <br />
 <br />
-,,,
+```
 $ ./build_ffmpeg.sh --init
-,,,
+```
 <br />
 ## 4<br />
 (Option 1|Option 2)<br />
@@ -53,18 +53,18 @@ Then copy its contents and replace the configuration part in build_ffmpeg.sh at 
 (Option 1|Option 2)<br />
 Build FFmpeg when the newest sources are not checked out yet for the use in android by calling:<br />
 <br />
-,,,
+```
 ./build_ffmpeg_arm_pie.sh --reset
-,,,
+```
 <br />
 <br />
 ### 5.2<br />
 (Option 1|Option 2)<br />
 If you have all the sources downloaded and just want to rebuild or rebuild with a different configuration just call:<br />
 <br />
-,,,
+```
 ./build_ffmpeg_arm_pie.sh
-,,,
+```
 <br /><br />
 ## 6<br />
 Check $pathToYouNdkDirectory/bin for your libraries and copy them before resuming if you want to build FFmpeg in other configuration.<br />
