@@ -25,7 +25,7 @@ Change into your cloned Git - Directory with:<br />
 <br />
 
 ```
-cd<br />
+cd  
 cd $pathToYourGitDir
 ```
 
