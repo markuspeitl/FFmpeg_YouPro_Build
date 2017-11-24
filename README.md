@@ -1,4 +1,7 @@
 Slightly modified FFmpeg build scripts for Android from https://github.com/Yelp/ffmpeg-android.<br />
+FFmpeg sources are available at https://github.com/FFmpeg/FFmpeg.<br />
+I do not own FFmpeg or any of the other sources used.
+
 Building was tested under Ubuntu 17.<br />
 The following commands refer to bash commands from the ubuntu terminal.<br /><br />
 
