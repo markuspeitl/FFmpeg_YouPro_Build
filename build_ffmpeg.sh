@@ -53,8 +53,12 @@ if [ "$1" = "--init" ]; then
     #printf "    done\n"
 
     # Download sources.
-
     printf "SOURCES\n"
+
+    printf "    copying ffmpeg v3.3.3\n"
+    cp -r $(pwd)/FFmpeg-n3.3.3 ${DIR_NDK}/sources/ffmpeg \
+	>> ${LOG_FILE} 2>&1
+    
     cd ${DIR_NDK}/sources \
         >> ${LOG_FILE} 2>&1
 
@@ -62,30 +66,45 @@ if [ "$1" = "--init" ]; then
     git clone --progress git://github.com/yasm/yasm.git \
         >> ${LOG_FILE} 2>&1
 
-    printf "    cloning ogg\n"
-    git clone --progress git://git.xiph.org/mirrors/ogg.git \
-        >> ${LOG_FILE} 2>&1
+    # mekame edited - START
 
-    printf "    downloading vorbis\n"
-    curl "https://ftp.osuosl.org/pub/xiph/releases/vorbis/libvorbis-1.3.4.tar.gz" \
-        -o libvorbis-1.3.4.tar.gz \
-        >> ${LOG_FILE} 2>&1
-    tar xzvf libvorbis-1.3.4.tar.gz \
-        >> ${LOG_FILE} 2>&1
-    rm libvorbis-1.3.4.tar.gz \
-        >> ${LOG_FILE} 2>&1
-    rm -rf libvorbis \
-        >> ${LOG_FILE} 2>&1
-    mv libvorbis-1.3.4 libvorbis \
-        >> ${LOG_FILE} 2>&1
+    #printf "    cloning ogg\n"
+    #git clone --progress git://git.xiph.org/mirrors/ogg.git \
+    #    >> ${LOG_FILE} 2>&1
+
+    #printf "    downloading vorbis\n"
+    #curl "https://ftp.osuosl.org/pub/xiph/releases/vorbis/libvorbis-1.3.4.tar.gz" \
+    #    -o libvorbis-1.3.4.tar.gz \
+    #    >> ${LOG_FILE} 2>&1
+    #tar xzvf libvorbis-1.3.4.tar.gz \
+    #    >> ${LOG_FILE} 2>&1
+    #rm libvorbis-1.3.4.tar.gz \
+    #    >> ${LOG_FILE} 2>&1
+    #rm -rf libvorbis \
+    #    >> ${LOG_FILE} 2>&1
+    #mv libvorbis-1.3.4 libvorbis \
+    #    >> ${LOG_FILE} 2>&1
 
     printf "    cloning vpx\n"
     (git clone --progress https://chromium.googlesource.com/webm/libvpx.git libvpx) \
         >> ${LOG_FILE} 2>&1
 
-    printf "    cloning ffmpeg\n"
-    (git clone --progress git://source.ffmpeg.org/ffmpeg.git ffmpeg) \
+    printf "    downloading openh264 v1.5\n"
+    wget "https://github.com/cisco/openh264/archive/v1.5.0.tar.gz" \
         >> ${LOG_FILE} 2>&1
+    tar -zxf v1.5.0.tar.gz \
+	>> ${LOG_FILE} 2>&1
+    rm -f v1.5.0.tar.gz
+    rm -rf openh264 \
+	>> ${LOG_FILE} 2>&1
+    mv openh264-1.5.0 openh264 \
+	>> ${LOG_FILE} 2>&1
+
+    #printf "    cloning ffmpeg\n"
+    #(git clone --progress git://source.ffmpeg.org/ffmpeg.git ffmpeg) \
+    #    >> ${LOG_FILE} 2>&1
+
+    # mekame edited - END
 
     SOURCE_LIST=$(ls ${DIR_NDK}/sources)
     printf "    done\n"
@@ -151,6 +170,7 @@ chmod -R u+x ${DIR_NDK} \
 
 # Build YASM.
 printf "YASM\n"
+printf "${DIR_NDK}/sources/yasm";
 cd ${DIR_NDK}/sources/yasm \
     >> ${LOG_FILE} 2>&1
 
@@ -167,7 +187,7 @@ printf "    cleaning\n"
     >> ${LOG_FILE} 2>&1) || true
 
 printf "    configuring\n"
-./autogen.sh --host=${PREFIX} --prefix=${DIR_SYSROOT} \
+bash autogen.sh --host=${PREFIX} --prefix=${DIR_SYSROOT} \
     >> ${LOG_FILE} 2>&1
 
 printf "    building\n"
@@ -184,77 +204,77 @@ ls ${DIR_SYSROOT}/lib | grep libyasm.a
 
 
 # Build libogg.
-printf "LIBOGG\n"
-export PATH=${ORIGINAL_PATH}:${DIR_SYSROOT}/bin
-export RANLIB=${DIR_SYSROOT}/bin/${PREFIX}-ranlib
-cd ${DIR_NDK}/sources/ogg \
-    >> ${LOG_FILE} 2>&1
+#printf "LIBOGG\n"
+#export PATH=${ORIGINAL_PATH}:${DIR_SYSROOT}/bin
+#export RANLIB=${DIR_SYSROOT}/bin/${PREFIX}-ranlib
+#cd ${DIR_NDK}/sources/ogg \
+#    >> ${LOG_FILE} 2>&1
 
-if [ "$1" = "--reset" ] || [ "$1" = "--init" ]; then
-    printf "    resetting\n"
-    git checkout -- . \
-        >> ${LOG_FILE} 2>&1
-    git checkout ab78196fd59ad7a329a2b19d2bcec5d840a9a21f \
-        >> ${LOG_FILE} 2>&1 || true
-fi
+#if [ "$1" = "--reset" ] || [ "$1" = "--init" ]; then
+#    printf "    resetting\n"
+#    git checkout -- . \
+#        >> ${LOG_FILE} 2>&1
+#    git checkout ab78196fd59ad7a329a2b19d2bcec5d840a9a21f \
+#        >> ${LOG_FILE} 2>&1 || true
+#fi
 
-printf "    cleaning\n"
-make clean \
-    >> ${LOG_FILE} 2>&1 || true
+#printf "    cleaning\n"
+#make clean \
+#    >> ${LOG_FILE} 2>&1 || true
 
-printf "    configuring\n"
-./autogen.sh --prefix=${DIR_SYSROOT} --host=${PREFIX} --with-sysroot=${DIR_SYSROOT} \
-    --disable-shared \
-    >> ${LOG_FILE} 2>&1
+#printf "    configuring\n"
+#./autogen.sh --prefix=${DIR_SYSROOT} --host=${PREFIX} --with-sysroot=${DIR_SYSROOT} \
+#    --disable-shared \
+#    >> ${LOG_FILE} 2>&1
 
-printf "    building\n"
-make -j${NUM_JOBS} \
-    >> ${LOG_FILE} 2>&1
+#printf "    building\n"
+#make -j${NUM_JOBS} \
+#    >> ${LOG_FILE} 2>&1
 
-printf "    installing\n"
-make install \
-    >> ${LOG_FILE} 2>&1
+#printf "    installing\n"
+#make install \
+#    >> ${LOG_FILE} 2>&1
 
-printf "    done\n    "
-ls ${DIR_SYSROOT}/lib | grep libogg.a
-unset RANLIB
-export PATH=${ORIGINAL_PATH}
+#printf "    done\n    "
+#ls ${DIR_SYSROOT}/lib | grep libogg.a
+#unset RANLIB
+#export PATH=${ORIGINAL_PATH}
 # Done building libogg.a and libogg.la.
 
 
 # Build libvorbis.
-printf "LIBVORBIS\n"
-export CC=${DIR_SYSROOT}/bin/${PREFIX}-gcc
-export CXX=${DIR_SYSROOT}/bin/${PREFIX}-g++
-export LD=${DIR_SYSROOT}/bin/${PREFIX}-ld
-export STRIP=${DIR_SYSROOT}/bin/${PREFIX}-strip
-export NM=${DIR_SYSROOT}/bin/${PREFIX}-nm
-export AR=${DIR_SYSROOT}/bin/${PREFIX}-ar
-export AS=${DIR_SYSROOT}/bin/${PREFIX}-as
-export RANLIB=${DIR_SYSROOT}/bin/${PREFIX}-ranlib
-cd ${DIR_NDK}/sources/libvorbis \
-    >> ${LOG_FILE} 2>&1
+#printf "LIBVORBIS\n"
+#export CC=${DIR_SYSROOT}/bin/${PREFIX}-gcc
+#export CXX=${DIR_SYSROOT}/bin/${PREFIX}-g++
+#export LD=${DIR_SYSROOT}/bin/${PREFIX}-ld
+#export STRIP=${DIR_SYSROOT}/bin/${PREFIX}-strip
+#export NM=${DIR_SYSROOT}/bin/${PREFIX}-nm
+#export AR=${DIR_SYSROOT}/bin/${PREFIX}-ar
+#export AS=${DIR_SYSROOT}/bin/${PREFIX}-as
+#export RANLIB=${DIR_SYSROOT}/bin/${PREFIX}-ranlib
+#cd ${DIR_NDK}/sources/libvorbis \
+#    >> ${LOG_FILE} 2>&1
 
-printf "    cleaning\n"
-make clean \
-    >> ${LOG_FILE} 2>&1 || true
+#printf "    cleaning\n"
+#make clean \
+#    >> ${LOG_FILE} 2>&1 || true
 
-printf "    configuring\n"
-./configure --prefix=${DIR_SYSROOT} --host=${PREFIX} --with-sysroot=${DIR_SYSROOT} \
-    --disable-shared \
-    >> ${LOG_FILE} 2>&1
+#printf "    configuring\n"
+#./configure --prefix=${DIR_SYSROOT} --host=${PREFIX} --with-sysroot=${DIR_SYSROOT} \
+#    --disable-shared \
+#    >> ${LOG_FILE} 2>&1
 
-printf "    building\n"
-make -j${NUM_JOBS} \
-    >> ${LOG_FILE} 2>&1
+#printf "    building\n"
+#make -j${NUM_JOBS} \
+#    >> ${LOG_FILE} 2>&1
 
-printf "    installing\n"
-make install \
-    >> ${LOG_FILE} 2>&1
+#printf "    installing\n"
+#make install \
+#    >> ${LOG_FILE} 2>&1
 
-printf "    done\n    "
-ls ${DIR_SYSROOT}/lib | grep libvorbis.a
-unset CC CXX LD STRIP NM AR AS RANLIB
+#printf "    done\n    "
+#ls ${DIR_SYSROOT}/lib | grep libvorbis.a
+#unset CC CXX LD STRIP NM AR AS RANLIB
 # libvorbis.a done.
 
 # Build libvpx.
@@ -300,6 +320,24 @@ ls ${DIR_SYSROOT}/lib | grep libvpx.a
 unset CROSS
 # libvpx.a finished building.
 
+# mekame edited - START
+# Build openh264
+printf "OPENH264\n"
+cd ${DIR_NDK}/sources/openh264 \
+    >> ${LOG_FILE} 2>&1
+
+printf "    building\n"
+make OS=android NDKROOT=${DIR_NDK} TARGET=android-16 ARCH=arm PREFIX=${DIR_SYSROOT} \
+    >> ${LOG_FILE} 2>&1
+printf "    installing\n"
+make OS=android NDKROOT=${DIR_NDK} TARGET=android-16 ARCH=arm PREFIX=${DIR_SYSROOT} install \
+    >> ${LOG_FILE} 2>&1
+printf "    cleaning\n"
+make OS=android NDKROOT=${DIR_NDK} TARGET=android-16 ARCH=arm PREFIX=${DIR_SYSROOT} clean \
+    >> ${LOG_FILE} 2>&1
+printf "    done\n    "
+# mekame edited - END
+
 
 # Build FFmpeg.
 printf "FFMPEG\n"
@@ -322,6 +360,7 @@ make clean \
     >> ${LOG_FILE} 2>&1 || true
 
 printf "    configuring\n"
+# mekame edited - START
 ./configure \
     --prefix=${DIR_SYSROOT} --arch=${CPU} --target-os=linux \
     --extra-ldflags="-L${DIR_SYSROOT}/lib ${PIE_FLAGS}" \
@@ -329,37 +368,18 @@ printf "    configuring\n"
     --extra-cxxflags="-I${DIR_SYSROOT}/include ${PIE_FLAGS}" \
     --enable-cross-compile --cross-prefix=${PREFIX}- --sysroot=${DIR_SYSROOT} \
     --disable-gpl --disable-nonfree --disable-shared --enable-static --disable-doc --enable-ffprobe --disable-ffserver \
-    --enable-libvorbis --disable-version3 --enable-libvpx --enable-swscale-alpha \
-    --disable-encoders \
-    --enable-encoder=apng \
-    --enable-encoder=ayuv \
-    --enable-encoder=huffyuv \
-    --enable-encoder=rawvideo \
-    --enable-encoder=v210 \
-    --enable-encoder=v308 \
-    --enable-encoder=v408 \
-    --enable-encoder=v410 \
+    --disable-version3 --enable-swscale-alpha \
+    --enable-libvpx \
+    --enable-libopenh264 \
     --enable-encoder=libvpx \
     --enable-encoder=libvpx-v9 \
-    --enable-encoder=wrapped_avframe \
-    --enable-encoder=y41p \
-    --enable-encoder=yuv4 \
-    --enable-encoder=pcm_f32be \
-    --enable-encoder=pcm_f32le \
-    --enable-encoder=pcm_s16be \
-    --enable-encoder=pcm_s16le \
-    --enable-encoder=pcm_s24be \
-    --enable-encoder=pcm_s24le \
-    --enable-encoder=pcm_s32be \
-    --enable-encoder=pcm_s32le \
-    --enable-encoder=pcm_u16be \
-    --enable-encoder=pcm_u16le \
-    --enable-encoder=pcm_u24be \
-    --enable-encoder=pcm_u24le \
-    --enable-encoder=pcm_u32be \
-    --enable-encoder=pcm_u32le \
-    --enable-encoder=vorbis \
-    --enable-encoder=wavpack \
+    --enable-encoder=libopenh264 \
+    --disable-encoder=h261 \
+    --disable-encoder=h263 \
+    --disable-encoder=h263i \
+    --disable-encoder=h263p \
+    --disable-encoder=h264 \
+    --disable-encoder=hevc \
     --disable-decoder=h261 \
     --disable-decoder=h263 \
     --disable-decoder=h263i \
@@ -368,6 +388,54 @@ printf "    configuring\n"
     --disable-decoder=hevc \
     $enablePic \
         >> ${LOG_FILE} 2>&1
+# mekame edited - END
+
+#./configure \
+#    --prefix=${DIR_SYSROOT} --arch=${CPU} --target-os=linux \
+#    --extra-ldflags="-L${DIR_SYSROOT}/lib ${PIE_FLAGS}" \
+#    --extra-cflags="-I${DIR_SYSROOT}/include ${PIE_FLAGS}" \
+#    --extra-cxxflags="-I${DIR_SYSROOT}/include ${PIE_FLAGS}" \
+#    --enable-cross-compile --cross-prefix=${PREFIX}- --sysroot=${DIR_SYSROOT} \
+#    --disable-gpl --disable-nonfree --disable-shared --enable-static --disable-doc --enable-ffprobe --disable-ffserver \
+#    --enable-libvorbis --disable-version3 --enable-libvpx --enable-swscale-alpha \
+#    --disable-encoders \
+#    --enable-encoder=apng \
+#    --enable-encoder=ayuv \
+#    --enable-encoder=huffyuv \
+#    --enable-encoder=rawvideo \
+#    --enable-encoder=v210 \
+#    --enable-encoder=v308 \
+#    --enable-encoder=v408 \
+#    --enable-encoder=v410 \
+#    --enable-encoder=libvpx \
+#    --enable-encoder=libvpx-v9 \
+#    --enable-encoder=wrapped_avframe \
+#    --enable-encoder=y41p \
+#    --enable-encoder=yuv4 \
+#    --enable-encoder=pcm_f32be \
+#    --enable-encoder=pcm_f32le \
+#    --enable-encoder=pcm_s16be \
+#    --enable-encoder=pcm_s16le \
+#    --enable-encoder=pcm_s24be \
+#    --enable-encoder=pcm_s24le \
+#    --enable-encoder=pcm_s32be \
+#    --enable-encoder=pcm_s32le \
+#    --enable-encoder=pcm_u16be \
+#    --enable-encoder=pcm_u16le \
+#    --enable-encoder=pcm_u24be \
+#    --enable-encoder=pcm_u24le \
+#    --enable-encoder=pcm_u32be \
+#    --enable-encoder=pcm_u32le \
+#    --enable-encoder=vorbis \
+#    --enable-encoder=wavpack \
+#    --disable-decoder=h261 \
+#    --disable-decoder=h263 \
+#    --disable-decoder=h263i \
+#    --disable-decoder=h263p \
+#    --disable-decoder=h264 \
+#    --disable-decoder=hevc \
+#    $enablePic \
+#        >> ${LOG_FILE} 2>&1
 
 printf "    building\n"
 make -j${NUM_JOBS} \
@@ -387,3 +455,5 @@ mkdir -p $ffmpegOutputDir \
 cp ${DIR_SYSROOT}/bin/ffmpeg $ffmpegOutputDir \
     >> ${LOG_FILE} 2>&1
 printf "Android ffmpeg executable in ${ffmpegOutputDir}/\n\0"
+
+./move_pie.sh
